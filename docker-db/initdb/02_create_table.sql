@@ -1,0 +1,9 @@
+SET CHARACTER SET utf8mb4;
+USE instagramclonedb;
+
+CREATE TABLE board (
+  id INT(10) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  title VARCHAR(50) NOT NULL COMMENT 'タイトル',
+  content TEXT NOT NULL COMMENT '内容',
+  CONSTRAINT board_PKC PRIMARY KEY(id)
+) COMMENT='掲示板';
