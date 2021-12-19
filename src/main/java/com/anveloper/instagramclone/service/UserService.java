@@ -1,6 +1,7 @@
 package com.anveloper.instagramclone.service;
 
 import com.anveloper.instagramclone.common.service.S3Service;
+import com.anveloper.instagramclone.dto.UserEditRequestDTO;
 import com.anveloper.instagramclone.dto.UserSaveRequestDTO;
 import com.anveloper.instagramclone.entity.User;
 import com.anveloper.instagramclone.repository.UserRepository;
@@ -8,6 +9,7 @@ import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Service
@@ -17,14 +19,14 @@ public class UserService {
   private final S3Service s3Service;
 
   @Transactional(readOnly = true)
-  public User findByUsername(String username) {
+  public User findByUserId(String userId) {
     return userRepository
-        .findByUsername(username)
-        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。username = " + username));
+        .findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。userId = " + userId));
   }
 
   @Transactional
-  public void save(UserSaveRequestDTO userSaveRequestDTO) {
+  public void saveUser(UserSaveRequestDTO userSaveRequestDTO) {
     Optional<User> savedUser = userRepository.findByUsername(userSaveRequestDTO.getUsername());
     if (savedUser.isPresent()) {
       throw new IllegalArgumentException("ユーザーがすでに登録されています。username = " + userSaveRequestDTO.getUsername());
@@ -42,14 +44,23 @@ public class UserService {
   }
 
   @Transactional
-  public void edit(UserSaveRequestDTO userSaveRequestDTO) {
+  public void editUser(UserEditRequestDTO userEditRequestDTO) {
     User savedUser =  userRepository
-        .findByUsername(user.getUsername())
-        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。username = " + user.getUsername()));
+        .findById(userEditRequestDTO.getId())
+        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。userId = " + userEditRequestDTO.getId()));
 
-    String profileUrl = s3Service.uploadFile(userSaveRequestDTO.getProfileImage());
+    savedUser.setIntroduce(userEditRequestDTO.getIntroduce());
+  }
 
-    savedUser.setIntroduce(user.getIntroduce());
-    savedUser.setProfileUrl();
+  @Transactional
+  public void editProfileImage(MultipartFile file, String userId) {
+    User savedUser =  userRepository
+        .findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。userId = " + userId));
+
+    String profileUrl = s3Service.uploadFile(file);
+    savedUser.setProfileUrl(profileUrl);
+
+    userRepository.save(savedUser);
   }
 }
