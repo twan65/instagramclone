@@ -19,8 +19,7 @@ public class PostService {
   private final UserService userService;
 
   public List<Post> findByUserId(String userId) {
-
-    User user = userService.findByUserId(userId);
+    userService.findByUserId(userId);
     return postRepository.findByUserId(userId);
   }
 
