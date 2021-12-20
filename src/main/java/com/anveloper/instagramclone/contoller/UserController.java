@@ -6,6 +6,7 @@ import com.anveloper.instagramclone.entity.User;
 import com.anveloper.instagramclone.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -51,12 +52,17 @@ public class UserController {
     userService.editProfileImage(file, userId);
   }
 
-  @PostMapping("/follower/{userid}")
+  // TODO: Security適用後、修正
+  @PostMapping("/follower/{followerId}")
   @ResponseStatus(HttpStatus.CREATED)
-  public void saveFollower(@PathVariable("userid") String userId) {
-    userService.saveFollower(userId);
+  public void saveFollower(@PathVariable("followerId") String followerId) {
+    userService.saveFollower(followerId);
   }
 
-
-
+  // TODO: Security適用後、修正
+  @DeleteMapping("/unfollower/{followerId}")
+  @ResponseStatus(HttpStatus.OK)
+  public void deleteFollower(@PathVariable("followerId") String followerId) {
+    userService.deleteFollower(followerId);
+  }
 }

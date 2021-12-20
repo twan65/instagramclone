@@ -9,11 +9,12 @@ import org.springframework.data.mongodb.core.mapping.Document;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Document("SubscribedToUser")
+@Document("Following")
 public class Following {
   @Id
   private String id;
   private String userId;
+  private String followerId;
   private String introduce;
   private String profileUrl;
 }

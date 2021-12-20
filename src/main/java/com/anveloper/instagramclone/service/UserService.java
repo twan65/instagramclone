@@ -12,10 +12,12 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class UserService {
@@ -77,16 +79,23 @@ public class UserService {
   }
 
   @Transactional
-  public void saveFollower(String userId) {
+  public void saveFollower(String followerId) {
+    // TODO: ユーザーIDで検索
     User savedUser =  userRepository
-        .findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。userId = " + userId));
+        .findById(followerId)
+        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。userId = " + followerId));
 
     Follower follower = new Follower();
-    follower.setUserId(userId);
+    follower.setUserId(savedUser.getId());
+    follower.setFollowerId(followerId);
     follower.setIntroduce(savedUser.getIntroduce());
     follower.setProfileUrl(savedUser.getProfileUrl());
 
     followerRepository.save(follower);
+  }
+
+  @Transactional
+  public void deleteFollower(String followerId) {
+//    followerRepository.deleteByUserIdAndFollowerId(followerId);
   }
 }

@@ -6,4 +6,5 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface FollowerRepository extends MongoRepository<Follower, String> {
   Set<Follower> findByUserId(String userId);
+  void deleteByUserIdAndFollowerId(String userId, String followerId);
 }
