@@ -24,28 +24,39 @@ public class UserController {
 
   private final UserService userService;
 
-  @GetMapping("/{userid}")
+  @GetMapping("/{username}")
   @ResponseStatus(HttpStatus.OK)
-  public User findByUsername(@PathVariable("userid") String userid) {
-    return userService.findByUserId(userid);
+  public User findByUsername(@PathVariable("username") String username) {
+    return userService.findByUsername(username);
   }
 
+  // TODO: Security適用後、修正
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void saveUser(@RequestBody UserSaveRequestDTO userSaveRequestDTO) {
     userService.saveUser(userSaveRequestDTO);
   }
 
+  // TODO: Security適用後、修正
   @PutMapping
   @ResponseStatus(HttpStatus.OK)
   public void editUser(@RequestBody UserEditRequestDTO userEditRequestDTO) {
     userService.editUser(userEditRequestDTO);
   }
 
+  // TODO: Security適用後、修正
   @PutMapping("/image")
   @ResponseStatus(HttpStatus.OK)
-  public void editProfileImage(@RequestParam("file") MultipartFile file, @RequestParam("userId") String userId) {
+  public void editImage(@RequestParam("file") MultipartFile file, @RequestParam("userId") String userId) {
     userService.editProfileImage(file, userId);
   }
+
+  @PostMapping("/follower/{userid}")
+  @ResponseStatus(HttpStatus.CREATED)
+  public void saveFollower(@PathVariable("userid") String userId) {
+    userService.saveFollower(userId);
+  }
+
+
 
 }

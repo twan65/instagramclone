@@ -5,6 +5,7 @@ import com.anveloper.instagramclone.dto.PostDTO;
 import com.anveloper.instagramclone.entity.Post;
 import com.anveloper.instagramclone.entity.User;
 import com.anveloper.instagramclone.repository.PostRepository;
+import com.anveloper.instagramclone.repository.UserRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -16,11 +17,10 @@ public class PostService {
 
   private final S3Service s3Service;
   private final PostRepository postRepository;
-  private final UserService userService;
+  private final UserRepository userRepository;
 
   public List<Post> findByUserId(String userId) {
-    userService.findByUserId(userId);
-    return postRepository.findByUserId(userId);
+      return postRepository.findByUserId(userId);
   }
 
   @Transactional

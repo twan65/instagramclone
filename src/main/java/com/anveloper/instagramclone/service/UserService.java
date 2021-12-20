@@ -3,9 +3,14 @@ package com.anveloper.instagramclone.service;
 import com.anveloper.instagramclone.common.service.S3Service;
 import com.anveloper.instagramclone.dto.UserEditRequestDTO;
 import com.anveloper.instagramclone.dto.UserSaveRequestDTO;
+import com.anveloper.instagramclone.entity.Follower;
 import com.anveloper.instagramclone.entity.User;
+import com.anveloper.instagramclone.repository.FollowingRepository;
+import com.anveloper.instagramclone.repository.FollowerRepository;
 import com.anveloper.instagramclone.repository.UserRepository;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -15,14 +20,21 @@ import org.springframework.web.multipart.MultipartFile;
 @Service
 public class UserService {
 
-  private final UserRepository userRepository;
   private final S3Service s3Service;
+  private final UserRepository userRepository;
+  private final FollowingRepository subscribedToUserRepository;
+  private final FollowerRepository followerRepository;
 
   @Transactional(readOnly = true)
-  public User findByUserId(String userId) {
-    return userRepository
-        .findById(userId)
-        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。userId = " + userId));
+  public User findByUsername(String username) {
+    User savedUser =  userRepository
+        .findByUsername(username)
+        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。username = " + username));
+
+    savedUser.setFollowingToUsers(subscribedToUserRepository.findByUserId(savedUser.getId()));
+    savedUser.setFollowers(followerRepository.findByUserId(savedUser.getId()));
+
+    return savedUser;
   }
 
   @Transactional
@@ -62,5 +74,19 @@ public class UserService {
     savedUser.setProfileUrl(profileUrl);
 
     userRepository.save(savedUser);
+  }
+
+  @Transactional
+  public void saveFollower(String userId) {
+    User savedUser =  userRepository
+        .findById(userId)
+        .orElseThrow(() -> new IllegalArgumentException("ユーザーが存在しません。userId = " + userId));
+
+    Follower follower = new Follower();
+    follower.setUserId(userId);
+    follower.setIntroduce(savedUser.getIntroduce());
+    follower.setProfileUrl(savedUser.getProfileUrl());
+
+    followerRepository.save(follower);
   }
 }
