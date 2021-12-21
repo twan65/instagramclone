@@ -31,7 +31,6 @@ public class UserController {
     return userService.findByUsername(username);
   }
 
-  // TODO: Security適用後、修正
   @PostMapping
   @ResponseStatus(HttpStatus.CREATED)
   public void saveUser(@RequestBody UserSaveRequestDTO userSaveRequestDTO) {
