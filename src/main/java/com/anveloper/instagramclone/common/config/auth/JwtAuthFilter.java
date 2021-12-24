@@ -1,6 +1,5 @@
 package com.anveloper.instagramclone.common.config.auth;
 
-import com.nimbusds.jwt.proc.BadJWTException;
 import java.io.IOException;
 import javax.servlet.FilterChain;
 import javax.servlet.GenericFilter;
@@ -33,13 +32,6 @@ public class JwtAuthFilter extends GenericFilter {
       } else {
         SecurityContextHolder.clearContext();
       }
-    } catch (BadJWTException e) {
-      ((HttpServletResponse) response).sendError(HttpStatus.SC_UNAUTHORIZED);
-      response.getWriter().print(e);
-      response.setContentType("application/json");
-      SecurityContextHolder.clearContext();
-      e.printStackTrace();
-      return;
     } catch (Exception e) {
       ((HttpServletResponse) response).sendError(HttpStatus.SC_UNAUTHORIZED);
       response.getWriter().print(e);

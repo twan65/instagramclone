@@ -4,8 +4,6 @@ import com.anveloper.instagramclone.common.config.auth.dto.SecurityUserDetails;
 import com.anveloper.instagramclone.entity.User;
 import com.anveloper.instagramclone.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nimbusds.jose.proc.SecurityContext;
-import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -18,14 +16,11 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
-import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
 @Component
 public class JwtAuthProcessor {
@@ -35,12 +30,7 @@ public class JwtAuthProcessor {
   @Autowired
   private UserRepository userRepository;
 
-  @Autowired
-  private BeanFactory beanFactory;
-
-  private ConfigurableJWTProcessor<SecurityContext> configurableJwtProcessor;
-
-  public Authentication authenticate(HttpServletRequest request) throws Exception {
+  public Authentication authenticate(HttpServletRequest request) throws IOException {
     String bearerToken = request.getHeader(HTTP_HEADER);
     if (bearerToken != null) {
       String accessToken = this.getBearerToken(bearerToken);
